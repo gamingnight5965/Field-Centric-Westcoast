@@ -79,29 +79,37 @@ object Drive : AdvantageFalconWestcoastDrivetrain() {
         setTolerance(0.005)
     }
 
-    fun fieldCentricDrive(x: Double, y: Double, reverse: Boolean = false) {
-        val desiredHeading = getDesiredHeading(x, y, reverse)
+    fun fieldCentricDrive(x: Double, y: Double, trigger: Double) {
+        val desiredHeading = getDesiredHeading(x, y)
         lastDesiredHeading = desiredHeading
 
-        val goalPose = odometry.poseMeters.plus(
+        var goalPose = odometry.poseMeters.plus(
             Transform2d(
                 Translation2d(
-                    sqrt(x.pow(2) + y.pow(2)) * maxSpeed.value * 0.125,
-                    Rotation2d.fromRadians(desiredHeading).minus(odometry.poseMeters.rotation)
-                ),
-                Rotation2d.fromRadians(desiredHeading).minus(odometry.poseMeters.rotation).apply {
-                    if (reverse) {
-                        rotateBy(Rotation2d.fromDegrees(180.0))
+                    sqrt(x.pow(2) + y.pow(2)) * maxSpeed.value * 0.125 * abs(trigger),
+                    Rotation2d.fromRadians(desiredHeading).minus(odometry.poseMeters.rotation).apply {
                     }
-                }
+
+                ),
+                Rotation2d.fromRadians(desiredHeading).minus(odometry.poseMeters.rotation)
             )
         )
+
+        if(trigger < 0) {
+            goalPose = goalPose.plus(
+                Transform2d(
+                    Translation2d(),
+                    Rotation2d.fromDegrees(180.0)
+                )
+            )
+        }
+
         Logger.getInstance().recordOutput("Drive Goal Pose", goalPose)
 
         val chassisSpeeds = controller.calculate(
             odometry.poseMeters,
             goalPose,
-            sqrt(x.pow(2) + y.pow(2)) * maxSpeed.value * if(reverse) -1.0 else 1.0,
+            sqrt(x.pow(2) + y.pow(2)) * maxSpeed.value * abs(trigger),
             0.0
         )
 
@@ -113,7 +121,7 @@ object Drive : AdvantageFalconWestcoastDrivetrain() {
     }
 
     fun pointInPlace(x: Double, y: Double) {
-        val desiredHeading = getDesiredHeading(x, y, false)
+        val desiredHeading = getDesiredHeading(x, y)
         lastDesiredHeading = desiredHeading
 
         val goalPose = Pose2d(
@@ -141,9 +149,9 @@ object Drive : AdvantageFalconWestcoastDrivetrain() {
 
 
     private var lastDesiredHeading = 0.0
-    fun getDesiredHeading(x: Double, y: Double, reverse: Boolean): Double {
+    fun getDesiredHeading(x: Double, y: Double): Double {
 //        return if (x == 0.0 && y == 0.0) lastDesiredHeading else atan2(y, x)
-        return MathUtil.angleModulus(atan2(y, x) + if (reverse) PI else 0.0)
+        return atan2(y, x)
     }
 
 

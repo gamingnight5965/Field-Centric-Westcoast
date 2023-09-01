@@ -14,7 +14,7 @@ class TeleopDriveCommand : FalconCommand(Drive) {
 
         if (abs(tx) + abs(ty) > 0) {
             Drive.fieldCentricDrive(
-                tx, ty, reverse()
+                tx, ty, trigger()
             )
         } else {
             val (rx, ry) = rotations()
@@ -41,6 +41,10 @@ class TeleopDriveCommand : FalconCommand(Drive) {
 
         fun rotations(): Pair<Double, Double> {
             return rotationX() to rotationY()
+        }
+
+        fun trigger(): Double {
+            return Controls.leftTrigger() * -1 + Controls.rightTrigger()
         }
 
         operator fun DoubleSource.unaryMinus(): DoubleSource = { -this@unaryMinus() }
