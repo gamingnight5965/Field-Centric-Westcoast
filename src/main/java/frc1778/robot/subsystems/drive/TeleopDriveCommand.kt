@@ -20,8 +20,6 @@ class TeleopDriveCommand : FalconCommand(Drive) {
             val (rx, ry) = rotations()
             Drive.pointInPlace(rx, ry)
         }
-//        val (rx, ry) = rotations()
-//        Drive.tankDriveVoltage(12.0.volts * tx, 12.0.volts * rx)
     }
 
 

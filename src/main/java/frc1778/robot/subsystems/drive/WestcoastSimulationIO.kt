@@ -42,7 +42,6 @@ class WestcoastSimulationIO : WestcoastDriveIO {
     val leftMain = falconFX(WPI_TalonFX(2), lengthModel) {
         talonFX.configFactoryDefault()
         brakeMode = true
-//        outputInverted = true
     }
 
     val rightFollower = falconFX(WPI_TalonFX(3), lengthModel) {
@@ -54,7 +53,6 @@ class WestcoastSimulationIO : WestcoastDriveIO {
     val leftFollower = falconFX(WPI_TalonFX(4), lengthModel) {
         talonFX.configFactoryDefault()
         brakeMode = true
-//        outputInverted = true
         follow(leftMain)
     }
 
@@ -91,12 +89,6 @@ class WestcoastSimulationIO : WestcoastDriveIO {
 
 
         driveSim.update(0.02)
-
-        Logger.getInstance().recordOutput("Right Position", driveSim.rightPositionMeters)
-        Logger.getInstance().recordOutput("Left Position", driveSim.leftPositionMeters)
-
-        Logger.getInstance().recordOutput("Left Voltage", rightMainSimulationCollection.motorOutputLeadVoltage)
-        Logger.getInstance().recordOutput("Right Voltage", leftMainSimulationCollection.motorOutputLeadVoltage)
 
         rightMainSimulationCollection.setIntegratedSensorRawPosition(
             lengthModel.toNativeUnitPosition(driveSim.rightPositionMeters.meters).value.roundToInt()
@@ -140,8 +132,6 @@ class WestcoastSimulationIO : WestcoastDriveIO {
     override fun setVoltages(leftVoltage: SIUnit<Volt>, rightVoltage: SIUnit<Volt>) {
         leftMain.setVoltage(leftVoltage)
         rightMain.setVoltage(rightVoltage)
-//        (leftMain.talonFX as WPI_TalonFX).setVoltage(leftVoltage.value)
-//        (rightMain.talonFX as WPI_TalonFX).setVoltage(rightVoltage.value)
     }
 
     override fun setOutputs(leftPercent: Double, rightPercent: Double) {
@@ -160,11 +150,11 @@ class WestcoastSimulationIO : WestcoastDriveIO {
     override fun setVelocity(
         leftVelocity: Double, rightVelocity: Double, leftAcceleration: Double, rightAcceleration: Double
     ) {
-        TODO("Not yet implemented")
+        throw NotImplementedError()
     }
 
     override fun setVelocity(leftVelocity: SIUnit<LinearVelocity>, rightVelocity: SIUnit<LinearVelocity>) {
-        TODO("Not yet implemented")
+        throw NotImplementedError()
     }
 
     override fun setNeutral() {
