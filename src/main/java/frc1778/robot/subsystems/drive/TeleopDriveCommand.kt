@@ -20,8 +20,6 @@ class TeleopDriveCommand : FalconCommand(Drive) {
             val (rx, ry) = rotations()
             Drive.pointInPlace(rx, ry)
         }
-//        val (rx, ry) = rotations()
-//        Drive.tankDriveVoltage(12.0.volts * tx, 12.0.volts * rx)
     }
 
 
@@ -33,7 +31,7 @@ class TeleopDriveCommand : FalconCommand(Drive) {
         val rotationX = (-Controls.driverController.getRawAxis(5)).withDeadband(DEADBAND)
         val rotationY = (-Controls.driverController.getRawAxis(4)).withDeadband(DEADBAND)
 
-        val reverse = Controls.driverController.getRawButton(1)
+        val reverse = Controls.driverController.getRawButton(5)
 
         fun translations(): Pair<Double, Double> {
             return translationX() to translationY()
